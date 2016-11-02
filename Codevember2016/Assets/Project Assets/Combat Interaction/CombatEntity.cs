@@ -43,13 +43,11 @@ public abstract class CombatEntity : MonoBehaviour
     public Job job;
 
     //Variables that are specific to the Skill Stat
-    protected int negRange { get; set; } //This is a negative value
-    protected int posRange { get; set; } //This is the positive value
+    public int negRange { get; set; } //This is a negative value
+    public int posRange { get; set; } //This is the positive value
 
     public string SKILL { get { return negRange + " - " + posRange; } }
 
     public abstract void processDamage(int dmg);
-
-    protected abstract int calculateDamage(CombatEntity target);
 
 }
