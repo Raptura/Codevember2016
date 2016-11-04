@@ -59,8 +59,9 @@ public class Player : CombatEntity
 
     void levelUp()
     {
-        //TODO: Base Stat increases based on random element and Job
         Debug.Log("Level Up!");
+
+        //TODO: Increase SKILL (neg, pos) on level up
         int oldHealth = maxHealth;
         int oldSpecial = maxSpecial;
         int oldAtk = ATK;
@@ -70,12 +71,12 @@ public class Player : CombatEntity
 
         if (job == CombatEntity.Job.Warrior)
         {
-            maxHealth += Random.Range(5, 10);
-            maxSpecial += Random.Range(2, 4);
-            ATK += Random.Range(6, 8);
-            SPE += Random.Range(1, 2);
-            RES += Random.Range(1, 2);
-            DEF += Random.Range(3, 5);
+            maxHealth += Random.Range(5, 11);
+            maxSpecial += Random.Range(2, 5);
+            ATK += Random.Range(6, 9);
+            SPE += Random.Range(1, 3);
+            RES += Random.Range(1, 3);
+            DEF += Random.Range(3, 6);
         }
         else if (job == CombatEntity.Job.Mage)
         {
@@ -86,14 +87,15 @@ public class Player : CombatEntity
             RES += Random.Range(3, 5);
             DEF += Random.Range(1, 2);
         }
+        //TODO: Tweak the Ranger's Growth Stats and Skill Increases
         else if (job == CombatEntity.Job.Ranger)
         {
-            maxHealth += Random.Range(4, 9);
-            maxSpecial += Random.Range(2, 4);
-            ATK += Random.Range(3, 5);
-            SPE += Random.Range(3, 5);
-            RES += Random.Range(3, 5);
-            DEF += Random.Range(3, 5);
+            maxHealth += Random.Range(4, 10);
+            maxSpecial += Random.Range(3, 6);
+            ATK += Random.Range(3, 6);
+            SPE += Random.Range(2, 5);
+            RES += Random.Range(2, 4);
+            DEF += Random.Range(2, 4);
         }
 
         level++;
