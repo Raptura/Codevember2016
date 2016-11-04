@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class CombatEntity : MonoBehaviour
+public abstract class CombatEntity
 {
 
     //Typical Stats
@@ -49,5 +49,18 @@ public abstract class CombatEntity : MonoBehaviour
     public string SKILL { get { return negRange + " - " + posRange; } }
 
     public abstract void processDamage(int dmg);
+
+    public static void debugStats(CombatEntity entity)
+    {
+        Debug.Log(
+        "Level: " + entity.level + "\t" +
+        "Class: " + entity.job.ToString() + "\t" +
+        "Max Health: " + entity.maxHealth + "\t" +
+        "Max Special: " + entity.maxSpecial + "\t" +
+        "ATK: " + entity.ATK + "\t" +
+        "SPE: " + entity.SPE + "\t" +
+        "DEF: " + entity.DEF + "\t" +
+        "RES: " + entity.RES);
+    }
 
 }

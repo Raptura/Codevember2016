@@ -32,6 +32,10 @@ public class Player : CombatEntity
             {
                 case 1:
                     return 100;
+                case 2:
+                    return 350;
+                case 3:
+                    return 600;
                 default:
                     return 0;
             }
@@ -64,13 +68,14 @@ public class Player : CombatEntity
         int oldRes = RES;
         int oldDef = DEF;
 
-        if (job == CombatEntity.Job.Warrior) {
+        if (job == CombatEntity.Job.Warrior)
+        {
             maxHealth += Random.Range(5, 10);
             maxSpecial += Random.Range(2, 4);
             ATK += Random.Range(6, 8);
             SPE += Random.Range(1, 2);
             RES += Random.Range(1, 2);
-            DEF += Random.Range(2, 4);
+            DEF += Random.Range(3, 5);
         }
         else if (job == CombatEntity.Job.Mage)
         {
@@ -95,15 +100,41 @@ public class Player : CombatEntity
 
     }
 
-    // Use this for initialization
-    void Start()
+    public static Player createPlayer(CombatEntity.Job job)
     {
+        Player newPlayer = new Player();
+        newPlayer.job = job;
+        newPlayer.level = 1;
+        switch (job)
+        {
+            case Job.Mage:
+                newPlayer.maxHealth = Random.Range(10, 16);
+                newPlayer.maxSpecial = Random.Range(10, 13);
+                newPlayer.ATK = Random.Range(1, 5);
+                newPlayer.SPE = Random.Range(5, 7);
+                newPlayer.RES = Random.Range(3, 5);
+                newPlayer.DEF = Random.Range(1, 4);
+                break;
+            case Job.Warrior:
+                newPlayer.maxHealth = Random.Range(14, 20);
+                newPlayer.maxSpecial = Random.Range(4, 11);
+                newPlayer.ATK = Random.Range(4, 6);
+                newPlayer.SPE = Random.Range(1, 3);
+                newPlayer.RES = Random.Range(1, 3);
+                newPlayer.DEF = Random.Range(3, 5);
+                break;
+            case Job.Ranger:
+                newPlayer.maxHealth = Random.Range(13, 16);
+                newPlayer.maxSpecial = Random.Range(7, 11);
+                newPlayer.ATK = Random.Range(3, 5);
+                newPlayer.SPE = Random.Range(2, 4);
+                newPlayer.RES = Random.Range(2, 4);
+                newPlayer.DEF = Random.Range(3, 5);
+                break;
+        }
+        newPlayer.health = newPlayer.maxHealth;
+        newPlayer.special = newPlayer.maxSpecial;
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        return newPlayer;
     }
 }

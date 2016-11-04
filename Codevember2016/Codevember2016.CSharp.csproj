@@ -71,6 +71,7 @@
     <Compile Include="Assets\Project Assets\Combat Interaction\CombatEntity.cs" />
     <Compile Include="Assets\Project Assets\Combat Interaction\Skill.cs" />
     <Compile Include="Assets\Project Assets\Enemies and AI\Enemy.cs" />
+    <Compile Include="Assets\Project Assets\Game Control\CharacterControl.cs" />
     <Compile Include="Assets\Project Assets\Player.cs" />
   </ItemGroup>
   <ItemGroup>
