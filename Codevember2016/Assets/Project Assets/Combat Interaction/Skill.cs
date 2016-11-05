@@ -45,12 +45,13 @@ public class Attack : Skill
         damage = damage <= 0 ? 0 : damage;
 
         List<string> text = new List<string>();
-        text.Add(user.combatName + "Attacked " + target.combatName);
-        text.Add(user.combatName + "Did " + damage +" Points of Damage");
+        text.Add(user.combatName + " attacked " + target.combatName);
+        text.Add(user.combatName + " did " + damage + " points of damage");
 
         GameObject.FindObjectOfType<TextManager>().addToQueue(text.ToArray());
 
-        target.processDamage(damage); //actually process the damage to the target
+        CombatInstance instance = GameObject.FindObjectOfType<CombatInstance>();
+        target.processDamage(instance, damage); //actually process the damage to the target
     }
 }
 

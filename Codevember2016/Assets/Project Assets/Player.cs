@@ -18,7 +18,8 @@ public class Player : CombatEntity
                     _exp = 0;
                     levelUp();
                 }
-                else {
+                else
+                {
                     _exp = value;
                 }
             }
@@ -42,7 +43,7 @@ public class Player : CombatEntity
         }
     }
 
-    public override void processDamage(int dmg)
+    public override void processDamage(CombatInstance instance, int dmg)
     {
         health -= dmg;
 
@@ -103,6 +104,17 @@ public class Player : CombatEntity
         }
 
         level++;
+
+        string[] text = new string[7];
+        text[0] = combatName + " became level " + level + "!";
+        text[1] = "Health increased from " + oldHealth + " to " + maxHealth +"!";
+        text[2] = "Special increased from " + oldSpecial + " to " + maxSpecial + "!";
+        text[3] = "ATK increased from " + oldAtk + " to " + ATK + "!";
+        text[4] = "SPE increased from " + oldSpe + " to " + SPE + "!";
+        text[5] = "DEF increased from " + oldDef + " to " + DEF + "!";
+        text[6] = "RES increased from " + oldRes + " to " + RES + "!";
+
+        GameObject.FindObjectOfType<TextManager>().addToQueue(text);
 
     }
 

@@ -3,18 +3,29 @@ using System.Collections;
 
 public class Enemy : CombatEntity
 {
-
-    public override void processDamage(int dmg)
+    public override void processDamage(CombatInstance instance, int dmg)
     {
         health -= dmg;
 
         //TODO: Display Combat Text
 
         if (health == 0)
+        {
+            instance.expGive += expGive;
+            instance.enemies.Remove(this);
             die();
+        }
     }
 
-    public void die() { }
+    public int expGive;
+
+    public void die()
+    {
+        string[] text = new string[1];
+        text[0] = combatName + " was defeated";
+
+        GameObject.FindObjectOfType<TextManager>().addToQueue(text);
+    }
 
     public static Enemy createEnemy(CombatEntity.Job job, int level)
     {

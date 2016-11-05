@@ -10,13 +10,41 @@ public class TextManager : MonoBehaviour
     public bool queueEnabled { get; set; }
     public Font font;
 
+    bool m_showTextBox;
+    public bool showTextBox
+    {
+        get
+        {
+            return m_showTextBox;
+        }
+        set
+        {
+            m_showTextBox = value;
+
+            //Open the text box
+            if (value)
+            {
+                Color c = gameObject.GetComponent<Image>().color;
+                gameObject.GetComponent<Image>().color = new Color(c.r, c.g, c.b, 1);
+                //TODO: Make Open and Close Animation
+            }
+            else
+            {
+                Color c = gameObject.GetComponent<Image>().color;
+                gameObject.GetComponent<Image>().color = new Color(c.r, c.g, c.b, 0);
+                //TODO: Make Open and Close Animation
+
+            }
+        }
+    }
+
 
     //Auto Text Pushes
     public float endTimer = 4f; //the time between ending auto text queues and closing the box
     public float nextQueueTimer = 2f; //The time between transitioning in the queue
 
     public Text textBoxText;
-    public Scrollbar scrollBar;
+    public ScrollRect scrollRect;
 
     private int stringIndex = 0; //is local to the push text iteration. NOT the entire text box
     private string textToDisplay = "";
@@ -37,7 +65,7 @@ public class TextManager : MonoBehaviour
 
     void Start()
     {
-        pushing = running = queueEnabled = false; //default off all vaiables
+        pushing = running = queueEnabled = showTextBox = false; //default off all vaiables
 
         textBoxText.font = font;
     }
@@ -51,6 +79,13 @@ public class TextManager : MonoBehaviour
         {
             StartCoroutine(runQueue());
         }
+
+        showTextBox = queueEnabled || pushing || running;
+
+
+        textBoxText.rectTransform.localPosition = new Vector2(0, 0);
+        textBoxText.rectTransform.sizeDelta = new Vector2(textBoxText.rectTransform.rect.width, textBoxText.preferredHeight);
+        scrollRect.verticalNormalizedPosition = 0;
 
     }
 
@@ -131,6 +166,7 @@ public class TextManager : MonoBehaviour
     public IEnumerator autoTextQueue(string[] text, float[] timing)
     {
         running = true;
+        resetText();
         //Start off by reseting the previous text
 
         for (int i = 0; i < text.Length; i++)
@@ -161,7 +197,9 @@ public class TextManager : MonoBehaviour
 
             StartCoroutine(autoTextQueue((string[])textQueue.ToArray().GetValue(0), (float[])timingQueue.ToArray().GetValue(0)));
 
-            textQueue.RemoveAt(0); //FIFO Queue
+            //FIFO Queues
+            textQueue.RemoveAt(0);
+            timingQueue.RemoveAt(0);
         }
 
         queueEnabled = false;
@@ -206,7 +244,7 @@ public class TextManager : MonoBehaviour
     /// <param name="text">The text being pushed</param>
     public void addToQueue(string text)
     {
-        addToQueue(new string[] { text }, new float[text.Length], font); //null timer as a fill to keep synchronized stringQueue and timingQueue
+        addToQueue(new string[] { text }, new float[] { 0 }, font); //null timer as a fill to keep synchronized stringQueue and timingQueue
     }
 
 }

@@ -19,7 +19,8 @@ public abstract class CombatEntity
             {
                 _health = maxHealth;
             }
-            else {
+            else
+            {
                 _health = value;
             }
         }
@@ -49,7 +50,7 @@ public abstract class CombatEntity
 
     public string SKILL { get { return (negRange + ATK) + " - " + (posRange + ATK); } }
 
-    public abstract void processDamage(int dmg);
+    public abstract void processDamage(CombatInstance instance, int dmg);
 
     public static void debugStats(CombatEntity entity)
     {
@@ -64,7 +65,8 @@ public abstract class CombatEntity
         "RES: " + entity.RES);
     }
 
-    public static void displayStats(CombatEntity entity, TextManager manager) {
+    public static void displayStats(CombatEntity entity, TextManager manager)
+    {
         string[] text = new string[10];
         text[0] = "Name: " + entity.combatName;
         text[1] = "Level: " + entity.level;

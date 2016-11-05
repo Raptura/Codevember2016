@@ -10,7 +10,7 @@ public class MataMata : MonoBehaviour {
         //Generates the Stats for The 
         enemyScript = Enemy.createEnemy(CombatEntity.Job.Ranger, 1);
         enemyScript.combatName = "Mata Mata";
-        CombatEntity.displayStats(enemyScript, GameObject.FindObjectOfType<TextManager>());
+        enemyScript.expGive = 100;
     }
 	
 	// Update is called once per frame
