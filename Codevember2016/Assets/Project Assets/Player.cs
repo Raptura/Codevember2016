@@ -77,6 +77,8 @@ public class Player : CombatEntity
             SPE += Random.Range(1, 3);
             RES += Random.Range(1, 3);
             DEF += Random.Range(3, 6);
+            negRange += Random.Range(-2, 2);
+            posRange += Random.Range(1, 3);
         }
         else if (job == CombatEntity.Job.Mage)
         {
@@ -96,6 +98,8 @@ public class Player : CombatEntity
             SPE += Random.Range(2, 5);
             RES += Random.Range(2, 4);
             DEF += Random.Range(2, 4);
+            negRange += Random.Range(-1, 3);
+            posRange += Random.Range(3, 5);
         }
 
         level++;
@@ -124,6 +128,8 @@ public class Player : CombatEntity
                 newPlayer.SPE = Random.Range(1, 3);
                 newPlayer.RES = Random.Range(1, 3);
                 newPlayer.DEF = Random.Range(3, 5);
+                newPlayer.negRange = Random.Range(-2, 0);
+                newPlayer.posRange = Random.Range(0, 3);
                 break;
             case Job.Ranger:
                 newPlayer.maxHealth = Random.Range(13, 16);
@@ -132,6 +138,8 @@ public class Player : CombatEntity
                 newPlayer.SPE = Random.Range(2, 4);
                 newPlayer.RES = Random.Range(2, 4);
                 newPlayer.DEF = Random.Range(3, 5);
+                newPlayer.negRange = Random.Range(-2, 1);
+                newPlayer.posRange = Random.Range(2, 4);
                 break;
         }
         newPlayer.health = newPlayer.maxHealth;

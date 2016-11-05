@@ -10,17 +10,19 @@ public class CharacterControl : MonoBehaviour
     void Start()
     {
         playerScript = Player.createPlayer(CombatEntity.Job.Ranger);
+        playerScript.combatName = "Raptura";
+        CombatEntity.displayStats(playerScript, FindObjectOfType<TextManager>());
 
-        for (int i = 0; i < 40; i++)
-        {
-            CombatEntity.debugStats(playerScript);
-            playerScript.EXP = playerScript.NEEDED_EXP;
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.anyKeyDown) {
+            Attack attack = new Attack();
+            attack.useSkill(playerScript, FindObjectOfType<MataMata>().enemyScript);
+        }
 
     }
 }
