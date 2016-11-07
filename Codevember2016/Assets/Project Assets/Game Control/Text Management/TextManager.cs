@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class TextManager : MonoBehaviour
 {
-    public bool pushing { get; set; }
-    public bool runningCurrentQueue { get; set; }
-    public bool running { get; set; }
+    public bool pushing;
+    public bool runningCurrentQueue;
+    public bool running;
     public Font font;
 
     bool m_showTextBox;
@@ -154,7 +154,7 @@ public class TextManager : MonoBehaviour
         else
         {
             //Do it again with no text delay
-            StartCoroutine(pushText(textInput, 0));
+            yield return StartCoroutine(pushText(textInput, 0));
         }
     }
 
@@ -175,8 +175,7 @@ public class TextManager : MonoBehaviour
         for (int i = 0; i < text.Length; i++)
         {
 
-            StartCoroutine(pushText(text[i], timing[i]));
-            while (pushing) { yield return null; }
+            yield return StartCoroutine(pushText(text[i], timing[i]));
         }
 
         yield return new WaitForSeconds(endTimer);
@@ -190,15 +189,15 @@ public class TextManager : MonoBehaviour
 
         while (textQueue.Count > 0)
         {
-            while (runningCurrentQueue) { yield return null; }
 
-            yield return new WaitForSeconds(nextQueueTimer);
-
-            StartCoroutine(autoTextQueue((string[])textQueue.ToArray().GetValue(0), (float[])timingQueue.ToArray().GetValue(0)));
+            yield return StartCoroutine(autoTextQueue((string[])textQueue.ToArray().GetValue(0), (float[])timingQueue.ToArray().GetValue(0)));
 
             //FIFO Queues
             textQueue.RemoveAt(0);
             timingQueue.RemoveAt(0);
+
+            yield return new WaitForSeconds(nextQueueTimer);
+
         }
 
         running = false;

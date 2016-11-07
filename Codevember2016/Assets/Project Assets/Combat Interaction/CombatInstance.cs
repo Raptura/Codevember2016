@@ -33,23 +33,13 @@ public class CombatInstance : MonoBehaviour
             Debug.Log("Turn " + turn);
             //Player Turn
             //Wait for Player to pick action
-            StartCoroutine("chooseSkill");
-
-            while (choosingSkill) { yield return null; }
+            yield return StartCoroutine("chooseSkill");
 
             while (textManager.running) { yield return null; }
 
             if (enemies.Count == 0)
             {
-                string[] text = new string[2];
-                text[0] = "All enemies were defeated!";
-                text[1] = player.combatName + " gained " + expGive + " EXP!";
-                GameObject.FindObjectOfType<TextManager>().addToQueue(text);
-
-                player.EXP += expGive;
-                expGive = 0;
-                inCombat = false;
-                StopCoroutine("combatQueue");
+                endCombat();
             }
 
             //Go through Enemies List
@@ -71,8 +61,21 @@ public class CombatInstance : MonoBehaviour
 
         while (!Input.GetKeyDown(KeyCode.A)) { yield return null; }
 
-        Skill.useSkill(Skill.SkillName.Inspect, player, enemies.ToArray()[0]);
+        Skill.useSkill(Skill.SkillName.Attack, player, enemies.ToArray()[0]);
 
         choosingSkill = false;
+    }
+
+    void endCombat()
+    {
+        string[] text = new string[2];
+        text[0] = "All enemies were defeated!";
+        text[1] = player.combatName + " gained " + expGive + " EXP!";
+        GameObject.FindObjectOfType<TextManager>().addToQueue(text);
+
+        player.EXP += expGive;
+        expGive = 0;
+        inCombat = false;
+        StopCoroutine("combatQueue");
     }
 }
