@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public abstract class CombatEntity
 {
@@ -49,6 +50,8 @@ public abstract class CombatEntity
     public int posRange { get; set; } //This is the positive value
 
     public string SKILL { get { return (negRange + ATK) + " - " + (posRange + ATK); } }
+
+    public List<Skill.SkillName> skills = new List<Skill.SkillName>();
 
     public abstract void processDamage(CombatInstance instance, int dmg);
 

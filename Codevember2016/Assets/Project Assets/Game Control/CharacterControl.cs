@@ -16,24 +16,29 @@ public class CharacterControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        enterCombat(FindObjectOfType<EnemyField>().enemyScript);
+    }
 
-        if (Input.anyKeyDown)
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.GetComponent<EnemyField>())
         {
-            enterCombat(FindObjectOfType<MataMata>().enemyScript);
-            Attack attack = new Attack();
-            attack.useSkill(playerScript, FindObjectOfType<MataMata>().enemyScript);
+            enterCombat(coll.gameObject.GetComponent<EnemyField>().enemyScript);
         }
-
     }
 
     void enterCombat(Enemy target)
     {
         CombatInstance instance = FindObjectOfType<CombatInstance>();
-        if (!instance.enemies.Contains(target))
+        if (!instance.enemies.Contains(target) && target != null)
         {
             instance.enemies.Add(target);
             instance.player = playerScript;
-            instance.inCombat = true;
+            if (!instance.inCombat)
+            {
+                instance.inCombat = true;
+                instance.StartCoroutine("combatQueue");
+            }
         }
     }
 }

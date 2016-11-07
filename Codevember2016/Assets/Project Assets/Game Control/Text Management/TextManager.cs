@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class TextManager : MonoBehaviour
 {
     public bool pushing { get; set; }
+    public bool runningCurrentQueue { get; set; }
     public bool running { get; set; }
-    public bool queueEnabled { get; set; }
     public Font font;
 
     bool m_showTextBox;
@@ -40,7 +40,7 @@ public class TextManager : MonoBehaviour
 
 
     //Auto Text Pushes
-    public float endTimer = 4f; //the time between ending auto text queues and closing the box
+    public float endTimer = 3f; //the time between ending auto text queues and closing the box
     public float nextQueueTimer = 2f; //The time between transitioning in the queue
 
     public Text textBoxText;
@@ -61,11 +61,12 @@ public class TextManager : MonoBehaviour
         Medium,
         Fast,
         Fastest,
+        Instant
     }
 
     void Start()
     {
-        pushing = running = queueEnabled = showTextBox = false; //default off all vaiables
+        pushing = runningCurrentQueue = running = showTextBox = false; //default off all vaiables
 
         textBoxText.font = font;
     }
@@ -75,12 +76,12 @@ public class TextManager : MonoBehaviour
     {
         textBoxText.text = textToDisplay;
 
-        if (!queueEnabled && textQueue.Count > 0 && timingQueue.Count > 0)
+        if (!running && textQueue.Count > 0 && timingQueue.Count > 0)
         {
             StartCoroutine(runQueue());
         }
 
-        showTextBox = queueEnabled || pushing || running;
+        showTextBox = running || pushing || runningCurrentQueue;
 
 
         textBoxText.rectTransform.localPosition = new Vector2(0, 0);
@@ -93,6 +94,8 @@ public class TextManager : MonoBehaviour
     {
         switch (speedLevel)
         {
+            case TextSpeed.Instant:
+                return 0.000f;
             case TextSpeed.Fastest:
                 return 0.001f;
             case TextSpeed.Fast:
@@ -124,7 +127,7 @@ public class TextManager : MonoBehaviour
         textToDisplay += textInput.ToCharArray()[stringIndex];
 
         //for any character that is not a space, play a sound
-        if (stringIndex < textInput.Length - 2 && textInput.ToCharArray()[stringIndex] != ' ') ;
+        if (stringIndex < textInput.Length - 2 && !char.IsWhiteSpace(textInput.ToCharArray()[stringIndex])) ;
         {
             //TODO: Play Text Sound
             //Debug.Log("TODO: Create text sound");
@@ -135,7 +138,7 @@ public class TextManager : MonoBehaviour
         yield return new WaitForSeconds(getSpeed()); //push text at the pace of the speed
 
         //TODO: Custom Inputs
-        if (Input.anyKeyDown)
+        if (Input.GetKey(KeyCode.Return))
         {
             textToDisplay += textInput.Substring(stringIndex, textInput.Length - stringIndex);
             stringIndex = 0;
@@ -165,33 +168,29 @@ public class TextManager : MonoBehaviour
 
     public IEnumerator autoTextQueue(string[] text, float[] timing)
     {
-        running = true;
+        runningCurrentQueue = true;
         resetText();
         //Start off by reseting the previous text
 
         for (int i = 0; i < text.Length; i++)
         {
-            while (pushing) { yield return null; }
 
             StartCoroutine(pushText(text[i], timing[i]));
-
+            while (pushing) { yield return null; }
         }
 
-        while (pushing) { yield return null; }
         yield return new WaitForSeconds(endTimer);
 
-        resetText();
-
-        running = false;
+        runningCurrentQueue = false;
     }
 
     public IEnumerator runQueue()
     {
-        queueEnabled = true;
+        running = true;
 
         while (textQueue.Count > 0)
         {
-            while (running) { yield return null; }
+            while (runningCurrentQueue) { yield return null; }
 
             yield return new WaitForSeconds(nextQueueTimer);
 
@@ -202,7 +201,7 @@ public class TextManager : MonoBehaviour
             timingQueue.RemoveAt(0);
         }
 
-        queueEnabled = false;
+        running = false;
 
     }
 
