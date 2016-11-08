@@ -51,6 +51,7 @@ public class CombatInstance : MonoBehaviour
             }
 
             turn++;
+            yield return null;
         }
 
     }
