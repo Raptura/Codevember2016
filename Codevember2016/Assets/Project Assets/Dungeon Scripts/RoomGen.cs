@@ -9,10 +9,10 @@ public class RoomGen : MonoBehaviour
         Wall, Floor
     }
 
-    public int columns = 50;                                 // The number of columns on the board (how wide it will be).
-    public int rows = 50;                                    // The number of rows on the board (how tall it will be).
-    public RangeAttribute roomWidth = new RangeAttribute(40, 50);         // The range of widths rooms can have
-    public RangeAttribute roomHeight = new RangeAttribute(10, 20);        // The range of heights rooms can have
+    public int columns = 10, rows = 10; //The number of rows and columns for the tiles (How many Tiles)
+    public RangeAttribute roomWidth = new RangeAttribute(7, 10);         // The range of widths rooms can have
+    public RangeAttribute roomHeight = new RangeAttribute(7, 10);        // The range of heights rooms can have
+
     public GameObject[] floorTiles;                           // An array of floor tile prefabs.
     public GameObject[] wallTiles;                            // An array of wall tile prefabs.
     public GameObject[] outerWallTiles;                       // An array of outer wall tile prefabs.
@@ -38,6 +38,9 @@ public class RoomGen : MonoBehaviour
         InstantiateOuterWalls();
     }
 
+    /// <summary>
+    /// Creates an empty Tile array
+    /// </summary>
     void SetupTilesArray()
     {
         // Set the tiles jagged array to the correct width.
@@ -51,6 +54,9 @@ public class RoomGen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates and Sets up the Room
+    /// </summary>
     void CreateRoom()
     {
         room = new Room();
@@ -63,14 +69,14 @@ public class RoomGen : MonoBehaviour
     void SetTileValues()
     {
         // ... and for each room go through it's width.
-        for (int j = 0; j < room.roomWidth; j++)
+        for (int i = 0; i < room.roomWidth; i++)
         {
-            int xCoord = room.xPos + j;
+            int xCoord = room.xPos + i;
 
             // For each horizontal tile, go up vertically through the room's height.
-            for (int k = 0; k < room.roomHeight; k++)
+            for (int j = 0; j < room.roomHeight; j++)
             {
-                int yCoord = room.yPos + k;
+                int yCoord = room.yPos + j;
 
                 // The coordinates in the jagged array are based on the room's position and it's width and height.
                 tiles[xCoord][yCoord] = TileType.Floor;
