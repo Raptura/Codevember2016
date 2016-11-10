@@ -9,17 +9,29 @@ public class RoomGen : MonoBehaviour
         Wall, Floor
     }
 
+    // The type of Event that will be laid in a specific position.
+    public enum EventType
+    {
+        Enemy, Exit
+    }
+
     public int columns = 10, rows = 10; //The number of rows and columns for the tiles (How many Tiles)
-    public RangeAttribute roomWidth = new RangeAttribute(7, 10);         // The range of widths rooms can have
-    public RangeAttribute roomHeight = new RangeAttribute(7, 10);        // The range of heights rooms can have
+
+    public RangeAttribute roomWidth = new RangeAttribute(7, 10);
+    public RangeAttribute roomHeight = new RangeAttribute(7, 10);
+
+    public int enemyCount;
 
     public GameObject[] floorTiles;                           // An array of floor tile prefabs.
     public GameObject[] wallTiles;                            // An array of wall tile prefabs.
     public GameObject[] outerWallTiles;                       // An array of outer wall tile prefabs.
+    public GameObject[] enemies;                              // An array of the random enemies that can appear
+    public GameObject exitSign;
     public GameObject player;
     public Room room;
 
     private TileType[][] tiles;                               // A jagged array of tile types representing the board, like a grid.
+    private EventType[][] events;                               // A jagged array of tile types representing the board, like a grid.
     private GameObject boardHolder;                           // GameObject that acts as a container for all other tiles.
 
     private void Start()
@@ -67,6 +79,24 @@ public class RoomGen : MonoBehaviour
     }
 
     void SetTileValues()
+    {
+        // ... and for each room go through it's width.
+        for (int i = 0; i < room.roomWidth; i++)
+        {
+            int xCoord = room.xPos + i;
+
+            // For each horizontal tile, go up vertically through the room's height.
+            for (int j = 0; j < room.roomHeight; j++)
+            {
+                int yCoord = room.yPos + j;
+
+                // The coordinates in the jagged array are based on the room's position and it's width and height.
+                tiles[xCoord][yCoord] = TileType.Floor;
+            }
+        }
+    }
+
+    void SetEvent()
     {
         // ... and for each room go through it's width.
         for (int i = 0; i < room.roomWidth; i++)
