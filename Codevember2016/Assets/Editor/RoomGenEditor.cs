@@ -40,10 +40,29 @@ public class RoomGenEditor : Editor
         float h_min = gen.h_min;
         float h_max = gen.h_max;
 
-        EditorGUILayout.MinMaxSlider(ref h_min, ref h_max, 0, gen.rows);
+        //TODO: Make this based on something more defined (not the rows and columns, somnething associated with the room itself, maybe Min?)
+
+        EditorGUILayout.MinMaxSlider(ref h_min, ref h_max, 0, gen.rows * gen.columns);
 
         gen.h_min = Mathf.RoundToInt(h_min);
         gen.h_max = Mathf.RoundToInt(h_max);
+
+        //Enemy Count Min Max Slider
+
+        gen.e_min = EditorGUILayout.IntField("Min Enemy Count", gen.e_min);
+        gen.e_max = EditorGUILayout.IntField("Max Enemy Count", gen.e_max);
+
+        float e_min = gen.e_min;
+        float e_max = gen.e_max;
+
+        EditorGUILayout.MinMaxSlider(ref e_min, ref e_max, 0, gen.rows);
+
+        gen.e_min = Mathf.RoundToInt(e_min);
+        gen.e_max = Mathf.RoundToInt(e_max);
+
+
+        //Other Properties
+
 
         SerializedProperty floorTiles = serializedObject.FindProperty("floorTiles");
         EditorGUILayout.PropertyField(floorTiles, true);

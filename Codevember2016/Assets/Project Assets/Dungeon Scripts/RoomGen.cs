@@ -19,12 +19,11 @@ public class RoomGen : MonoBehaviour
 
     public int columns = 10, rows = 10; //The number of rows and columns for the tiles (How many Tiles)
 
-    public int w_min, w_max;
-    public int h_min, h_max;
+    public int w_min, w_max; //width
+    public int h_min, h_max; //height
+    public int e_min, e_max; //enemies
 
-    public RangeAttribute roomWidth, roomHeight;
-
-    public int enemyCount;
+    public RangeAttribute roomWidth, roomHeight, enemyCount;
 
     public GameObject[] floorTiles;                           // An array of floor tile prefabs.
     public GameObject[] wallTiles;                            // An array of wall tile prefabs.
@@ -32,7 +31,7 @@ public class RoomGen : MonoBehaviour
     public GameObject[] enemies;                              // An array of the random enemies that can appear
     public GameObject exitSign;
     public GameObject player;
-    public Camera2DFollow camera;
+    public Camera2DFollow cam;
     public Room room;
 
     private TileType[][] tiles;                               // A jagged array of tile types representing the board, like a grid.
@@ -40,10 +39,12 @@ public class RoomGen : MonoBehaviour
     private GameObject boardHolder;                           // GameObject that acts as a container for all other tiles.
     private GameObject eventHolder;
     private GameObject enemyHolder;
+
     private void Start()
     {
         roomWidth = new RangeAttribute(w_min, w_max);
         roomHeight = new RangeAttribute(h_min, h_max);
+        enemyCount = new RangeAttribute(e_min, e_max);
 
         boardHolder = new GameObject("Board Holder");
         enemyHolder = new GameObject("Enemy Holder");
@@ -58,6 +59,8 @@ public class RoomGen : MonoBehaviour
         SetTileValues();
 
         InstantiateTiles();
+
+        InstantiateEvents();
 
         InstantiateOuterWalls();
     }
@@ -90,7 +93,7 @@ public class RoomGen : MonoBehaviour
 
         Vector3 playerPos = new Vector3(room.xPos, room.yPos, 0);
         Instantiate(player, playerPos, Quaternion.identity);
-        camera.target = player.transform;
+        cam.target = player.transform;
     }
 
     void SetTileValues()
@@ -114,7 +117,11 @@ public class RoomGen : MonoBehaviour
     void SetEventValues()
     {
         int enemiesPlaced = 0;
-        while (enemiesPlaced < enemyCount)
+
+
+        int enemies = (int)Random.Range(enemyCount.min, enemyCount.max);
+
+        while (enemiesPlaced < enemies)
         {
             int posx_min = room.xPos + 1;
             int posx_max = posx_min + room.roomWidth - 1;
