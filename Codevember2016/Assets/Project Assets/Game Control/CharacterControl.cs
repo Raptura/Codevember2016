@@ -16,7 +16,7 @@ public class CharacterControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        enterCombat(FindObjectOfType<EnemyField>().enemyScript);
+        //enterCombat(FindObjectOfType<EnemyField>().enemyScript);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

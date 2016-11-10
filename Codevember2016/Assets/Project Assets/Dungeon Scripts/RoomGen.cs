@@ -12,13 +12,17 @@ public class RoomGen : MonoBehaviour
     // The type of Event that will be laid in a specific position.
     public enum EventType
     {
-        Enemy, Exit
+        None, Enemy, Exit
     }
+
+    //All Fields are Set up in Hierarchy Through RoomGenEditor.cs
 
     public int columns = 10, rows = 10; //The number of rows and columns for the tiles (How many Tiles)
 
-    public RangeAttribute roomWidth = new RangeAttribute(7, 10);
-    public RangeAttribute roomHeight = new RangeAttribute(7, 10);
+    public int w_min, w_max;
+    public int h_min, h_max;
+
+    public RangeAttribute roomWidth, roomHeight;
 
     public int enemyCount;
 
@@ -28,20 +32,28 @@ public class RoomGen : MonoBehaviour
     public GameObject[] enemies;                              // An array of the random enemies that can appear
     public GameObject exitSign;
     public GameObject player;
+    public Camera2DFollow camera;
     public Room room;
 
     private TileType[][] tiles;                               // A jagged array of tile types representing the board, like a grid.
     private EventType[][] events;                               // A jagged array of tile types representing the board, like a grid.
     private GameObject boardHolder;                           // GameObject that acts as a container for all other tiles.
-
+    private GameObject eventHolder;
+    private GameObject enemyHolder;
     private void Start()
     {
-        // Create the board holder.
-        boardHolder = new GameObject("BoardHolder");
+        roomWidth = new RangeAttribute(w_min, w_max);
+        roomHeight = new RangeAttribute(h_min, h_max);
 
-        SetupTilesArray();
+        boardHolder = new GameObject("Board Holder");
+        enemyHolder = new GameObject("Enemy Holder");
+        eventHolder = new GameObject("Event Holder");
+
+        SetupTilesAndEventsArray();
 
         CreateRoom();
+
+        SetEventValues();
 
         SetTileValues();
 
@@ -53,16 +65,18 @@ public class RoomGen : MonoBehaviour
     /// <summary>
     /// Creates an empty Tile array
     /// </summary>
-    void SetupTilesArray()
+    void SetupTilesAndEventsArray()
     {
         // Set the tiles jagged array to the correct width.
         tiles = new TileType[columns][];
+        events = new EventType[columns][];
 
         // Go through all the tile arrays...
         for (int i = 0; i < tiles.Length; i++)
         {
             // ... and set each tile array is the correct height.
             tiles[i] = new TileType[rows];
+            events[i] = new EventType[rows];
         }
     }
 
@@ -76,6 +90,7 @@ public class RoomGen : MonoBehaviour
 
         Vector3 playerPos = new Vector3(room.xPos, room.yPos, 0);
         Instantiate(player, playerPos, Quaternion.identity);
+        camera.target = player.transform;
     }
 
     void SetTileValues()
@@ -96,20 +111,43 @@ public class RoomGen : MonoBehaviour
         }
     }
 
-    void SetEvent()
+    void SetEventValues()
     {
-        // ... and for each room go through it's width.
-        for (int i = 0; i < room.roomWidth; i++)
+        int enemiesPlaced = 0;
+        while (enemiesPlaced < enemyCount)
         {
-            int xCoord = room.xPos + i;
+            int posx_min = room.xPos + 1;
+            int posx_max = posx_min + room.roomWidth - 1;
 
-            // For each horizontal tile, go up vertically through the room's height.
-            for (int j = 0; j < room.roomHeight; j++)
+            int posy_min = room.yPos + 1;
+            int posy_max = posy_min + room.roomHeight - 1;
+
+            int posx = Random.Range(posx_min, posx_max);
+            int posy = Random.Range(posy_min, posy_max);
+
+            if (events[posx][posy] == EventType.None)
             {
-                int yCoord = room.yPos + j;
+                events[posx][posy] = EventType.Enemy;
+                enemiesPlaced++;
+            }
+        }
 
-                // The coordinates in the jagged array are based on the room's position and it's width and height.
-                tiles[xCoord][yCoord] = TileType.Floor;
+        bool exitPlaced = false;
+        while (exitPlaced)
+        {
+            int posx_min = room.xPos + 1 + (int)Mathf.Round(room.roomWidth * (1 - (1 / 6)));
+            int posx_max = posx_min + room.roomWidth - 1;
+
+            int posy_min = room.yPos + 1;
+            int posy_max = posy_min + room.roomHeight - 1;
+
+            int posx = Random.Range(posx_min, posx_max);
+            int posy = Random.Range(posy_min, posy_max);
+
+            if (events[posx][posy] == EventType.None)
+            {
+                events[posx][posy] = EventType.Exit;
+                exitPlaced = true;
             }
         }
     }
@@ -122,13 +160,36 @@ public class RoomGen : MonoBehaviour
             for (int j = 0; j < tiles[i].Length; j++)
             {
                 // ... and instantiate a floor tile for it.
-                InstantiateFromArray(floorTiles, i, j);
+                InstantiateFromArray(floorTiles, i, j, boardHolder);
 
                 // If the tile type is Wall...
                 if (tiles[i][j] == TileType.Wall)
                 {
                     // ... instantiate a wall over the top.
-                    InstantiateFromArray(wallTiles, i, j);
+                    InstantiateFromArray(wallTiles, i, j, boardHolder);
+                }
+            }
+        }
+    }
+
+    void InstantiateEvents()
+    {
+        // Go through all the tiles in the jagged array...
+        for (int i = 0; i < events.Length; i++)
+        {
+            for (int j = 0; j < events[i].Length; j++)
+            {
+                // If the tile type is Wall...
+                if (events[i][j] == EventType.Enemy)
+                {
+                    InstantiateFromArray(enemies, i, j, enemyHolder);
+                }
+
+                // If the tile type is Wall...
+                if (events[i][j] == EventType.Exit)
+                {
+                    GameObject instance = Instantiate(exitSign, new Vector3(i, j, 0f), Quaternion.identity) as GameObject;
+                    instance.transform.parent = eventHolder.transform;
                 }
             }
         }
@@ -160,7 +221,7 @@ public class RoomGen : MonoBehaviour
         while (currentY <= endingY)
         {
             // ... instantiate an outer wall tile at the x coordinate and the current y coordinate.
-            InstantiateFromArray(outerWallTiles, xCoord, currentY);
+            InstantiateFromArray(outerWallTiles, xCoord, currentY, boardHolder);
 
             currentY++;
         }
@@ -175,13 +236,13 @@ public class RoomGen : MonoBehaviour
         while (currentX <= endingX)
         {
             // ... instantiate an outer wall tile at the y coordinate and the current x coordinate.
-            InstantiateFromArray(outerWallTiles, currentX, yCoord);
+            InstantiateFromArray(outerWallTiles, currentX, yCoord, boardHolder);
 
             currentX++;
         }
     }
 
-    void InstantiateFromArray(GameObject[] prefabs, float xCoord, float yCoord)
+    void InstantiateFromArray(GameObject[] prefabs, float xCoord, float yCoord, GameObject parent)
     {
         // Create a random index for the array.
         int randomIndex = Random.Range(0, prefabs.Length);
@@ -190,9 +251,9 @@ public class RoomGen : MonoBehaviour
         Vector3 position = new Vector3(xCoord, yCoord, 0f);
 
         // Create an instance of the prefab from the random index of the array.
-        GameObject tileInstance = Instantiate(prefabs[randomIndex], position, Quaternion.identity) as GameObject;
+        GameObject instance = Instantiate(prefabs[randomIndex], position, Quaternion.identity) as GameObject;
 
         // Set the tile's parent to the board holder.
-        tileInstance.transform.parent = boardHolder.transform;
+        instance.transform.parent = parent.transform;
     }
 }
