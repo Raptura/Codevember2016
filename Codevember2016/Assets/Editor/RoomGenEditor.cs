@@ -82,7 +82,7 @@ public class RoomGenEditor : Editor
         SerializedProperty player = serializedObject.FindProperty("player");
         EditorGUILayout.PropertyField(player, true);
 
-        SerializedProperty camera = serializedObject.FindProperty("camera");
+        SerializedProperty camera = serializedObject.FindProperty("cam");
         EditorGUILayout.PropertyField(camera, true);
 
         serializedObject.ApplyModifiedProperties();

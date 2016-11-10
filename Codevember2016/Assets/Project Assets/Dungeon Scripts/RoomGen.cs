@@ -92,8 +92,8 @@ public class RoomGen : MonoBehaviour
         room.SetupRoom(roomWidth, roomHeight, columns, rows);
 
         Vector3 playerPos = new Vector3(room.xPos, room.yPos, 0);
-        Instantiate(player, playerPos, Quaternion.identity);
-        cam.target = player.transform;
+        GameObject playerInstance = Instantiate(player, playerPos, Quaternion.identity) as GameObject;
+        cam.target = playerInstance.transform;
     }
 
     void SetTileValues()
