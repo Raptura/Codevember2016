@@ -6,6 +6,7 @@ public abstract class CombatEntity
 {
 
     //Typical Stats
+    public bool isDead = false; //Only edit when the death command has been executed
     private int _health;
     public int health
     {

@@ -10,6 +10,12 @@ public class TextManager : MonoBehaviour
     public bool running;
     public Font font;
 
+    public enum ManagerMode
+    {
+        Standby, AutoQueue, Menu
+    }
+    public ManagerMode mode { get; set; }
+
     bool m_showTextBox;
     public bool showTextBox
     {
@@ -67,6 +73,7 @@ public class TextManager : MonoBehaviour
     void Start()
     {
         pushing = runningCurrentQueue = running = showTextBox = false; //default off all vaiables
+        mode = ManagerMode.Standby;
 
         textBoxText.font = font;
     }
@@ -109,6 +116,55 @@ public class TextManager : MonoBehaviour
             default:
                 return 0.1f;
         }
+    }
+
+    /// <summary>
+    /// Resets the current Text box
+    /// </summary>
+    public void resetText()
+    {
+        textToDisplay = "";
+    }
+
+    public IEnumerator autoTextQueue(string[] text, float[] timing)
+    {
+        runningCurrentQueue = true;
+        resetText();
+        //Start off by reseting the previous text
+
+        for (int i = 0; i < text.Length; i++)
+        {
+
+            yield return StartCoroutine(pushText(text[i], timing[i]));
+        }
+
+        yield return new WaitForSeconds(endTimer);
+
+        runningCurrentQueue = false;
+    }
+
+    public IEnumerator runQueue()
+    {
+        while (mode != ManagerMode.Standby) { yield return null; }
+
+        mode = ManagerMode.AutoQueue;
+        running = true;
+
+        while (textQueue.Count > 0)
+        {
+
+            yield return StartCoroutine(autoTextQueue((string[])textQueue.ToArray().GetValue(0), (float[])timingQueue.ToArray().GetValue(0)));
+
+            //FIFO Queues
+            textQueue.RemoveAt(0);
+            timingQueue.RemoveAt(0);
+
+            yield return new WaitForSeconds(nextQueueTimer);
+
+        }
+
+        running = false;
+        mode = ManagerMode.Standby; //Return to standby
     }
 
     public IEnumerator pushText(string textInput, float preWaitTime)
@@ -156,52 +212,6 @@ public class TextManager : MonoBehaviour
             //Do it again with no text delay
             yield return StartCoroutine(pushText(textInput, 0));
         }
-    }
-
-    /// <summary>
-    /// Resets the current Text box
-    /// </summary>
-    public void resetText()
-    {
-        textToDisplay = "";
-    }
-
-    public IEnumerator autoTextQueue(string[] text, float[] timing)
-    {
-        runningCurrentQueue = true;
-        resetText();
-        //Start off by reseting the previous text
-
-        for (int i = 0; i < text.Length; i++)
-        {
-
-            yield return StartCoroutine(pushText(text[i], timing[i]));
-        }
-
-        yield return new WaitForSeconds(endTimer);
-
-        runningCurrentQueue = false;
-    }
-
-    public IEnumerator runQueue()
-    {
-        running = true;
-
-        while (textQueue.Count > 0)
-        {
-
-            yield return StartCoroutine(autoTextQueue((string[])textQueue.ToArray().GetValue(0), (float[])timingQueue.ToArray().GetValue(0)));
-
-            //FIFO Queues
-            textQueue.RemoveAt(0);
-            timingQueue.RemoveAt(0);
-
-            yield return new WaitForSeconds(nextQueueTimer);
-
-        }
-
-        running = false;
-
     }
 
     /// <summary>

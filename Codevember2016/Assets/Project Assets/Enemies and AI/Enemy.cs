@@ -19,12 +19,13 @@ public class Enemy : CombatEntity
 
     public int expGive;
 
-    public void die()
+    public virtual void die()
     {
         string[] text = new string[1];
         text[0] = combatName + " was defeated";
 
         GameObject.FindObjectOfType<TextManager>().addToQueue(text);
+        isDead = true;
     }
 
     public void generateStats(CombatEntity.Job job, int level)

@@ -40,9 +40,7 @@ public class RoomGenEditor : Editor
         float h_min = gen.h_min;
         float h_max = gen.h_max;
 
-        //TODO: Make this based on something more defined (not the rows and columns, somnething associated with the room itself, maybe Min?)
-
-        EditorGUILayout.MinMaxSlider(ref h_min, ref h_max, 0, gen.rows * gen.columns);
+        EditorGUILayout.MinMaxSlider(ref h_min, ref h_max, 0, gen.rows);
 
         gen.h_min = Mathf.RoundToInt(h_min);
         gen.h_max = Mathf.RoundToInt(h_max);
@@ -55,7 +53,9 @@ public class RoomGenEditor : Editor
         float e_min = gen.e_min;
         float e_max = gen.e_max;
 
-        EditorGUILayout.MinMaxSlider(ref e_min, ref e_max, 0, gen.rows);
+        //TODO: Make this based on something more defined (not the rows and columns, somnething associated with the room itself, maybe Min?)
+
+        EditorGUILayout.MinMaxSlider(ref e_min, ref e_max, 0, gen.h_min * gen.w_min);
 
         gen.e_min = Mathf.RoundToInt(e_min);
         gen.e_max = Mathf.RoundToInt(e_max);

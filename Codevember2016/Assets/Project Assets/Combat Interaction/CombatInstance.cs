@@ -27,7 +27,7 @@ public class CombatInstance : MonoBehaviour
     {
         Debug.Log("Combat Start");
         int turn = 1;
-
+        GameObject.FindObjectOfType<TextManager>().addToQueue("COMBAT START!");
         while (inCombat)
         {
             Debug.Log("Turn " + turn);

@@ -107,7 +107,7 @@ public class Player : CombatEntity
 
         string[] text = new string[7];
         text[0] = combatName + " became level " + level + "!";
-        text[1] = "Health increased from " + oldHealth + " to " + maxHealth +"!";
+        text[1] = "Health increased from " + oldHealth + " to " + maxHealth + "!";
         text[2] = "Special increased from " + oldSpecial + " to " + maxSpecial + "!";
         text[3] = "ATK increased from " + oldAtk + " to " + ATK + "!";
         text[4] = "SPE increased from " + oldSpe + " to " + SPE + "!";

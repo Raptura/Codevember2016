@@ -9,13 +9,15 @@ public class EnemyField : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        enemyScript = new MataMata();
+        enemyScript = new SkellIvy();
         enemyScript.setup();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (enemyScript.isDead)
+            Destroy(this.gameObject);
 
     }
 }
