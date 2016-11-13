@@ -72,6 +72,8 @@
     <Compile Include="Assets\Project Assets\Enemies and AI\EnemyField.cs" />
     <Compile Include="Assets\Project Assets\Enemies and AI\MataMata.cs" />
     <Compile Include="Assets\Project Assets\Game Control\CharacterControl.cs" />
+    <Compile Include="Assets\Project Assets\Game Control\Text Management\AutoQueueManager.cs" />
+    <Compile Include="Assets\Project Assets\Game Control\Text Management\MenuManager.cs" />
     <Compile Include="Assets\Project Assets\Game Control\Text Management\TextManager.cs" />
     <Compile Include="Assets\Project Assets\Player.cs" />
   </ItemGroup>

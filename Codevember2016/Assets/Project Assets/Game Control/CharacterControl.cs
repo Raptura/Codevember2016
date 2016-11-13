@@ -26,7 +26,6 @@ public class CharacterControl : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        Debug.Log("Triggered");
         if (coll.gameObject.GetComponent<EnemyField>())
         {
             enterCombat(coll.gameObject.GetComponent<EnemyField>().enemyScript);
@@ -41,8 +40,7 @@ public class CharacterControl : MonoBehaviour
             instance.player = playerScript;
             if (!instance.inCombat)
             {
-                instance.inCombat = true;
-                instance.StartCoroutine("combatQueue");
+                instance.StartCoroutine(instance.combatQueue());
             }
         }
     }
@@ -57,7 +55,5 @@ public class CharacterControl : MonoBehaviour
             transform.Translate(Vector2.down * speed * Time.deltaTime);
         if (Input.GetKey(KeyCode.D))
             transform.Translate(Vector2.right * speed * Time.deltaTime);
-
-
     }
 }

@@ -28,14 +28,18 @@ public class CombatInstance : MonoBehaviour
         Debug.Log("Combat Start");
         int turn = 1;
         GameObject.FindObjectOfType<TextManager>().addToQueue("COMBAT START!");
+        inCombat = true;
+
         while (inCombat)
         {
             Debug.Log("Turn " + turn);
+
+            while (textManager.mode != TextManager.ManagerMode.Standby) { yield return null; }
+
             //Player Turn
             //Wait for Player to pick action
-            yield return StartCoroutine("chooseSkill");
+            yield return StartCoroutine(player.chooseSkill(textManager, this));
 
-            while (textManager.running) { yield return null; }
 
             if (enemies.Count == 0)
             {
@@ -47,24 +51,13 @@ public class CombatInstance : MonoBehaviour
             foreach (Enemy e in enemies)
             {
                 e.chooseSkill(this);
-                while (textManager.running) { yield return null; }
+                while (textManager.mode != TextManager.ManagerMode.Standby) { yield return null; }
             }
 
             turn++;
             yield return null;
         }
 
-    }
-
-    IEnumerator chooseSkill()
-    {
-        choosingSkill = true;
-
-        while (!Input.GetKeyDown(KeyCode.A)) { yield return null; }
-
-        Skill.useSkill(Skill.SkillName.Attack, player, enemies.ToArray()[0]);
-
-        choosingSkill = false;
     }
 
     void endCombat()

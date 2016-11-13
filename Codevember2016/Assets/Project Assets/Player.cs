@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
+
 using System.Collections;
+using System.Collections.Generic;
+
 public class Player : CombatEntity
 {
     private int _exp;
@@ -159,4 +162,71 @@ public class Player : CombatEntity
 
         return newPlayer;
     }
+
+
+    private enum CombatMenu
+    {
+        Start,
+        Skills,
+        Target
+    }
+
+    public IEnumerator chooseSkill(TextManager manager, CombatInstance instance)
+    {
+        bool skillChosen = false;
+        CombatMenu currMenu = CombatMenu.Start;
+
+        while (!skillChosen)
+        {
+            manager.setupMenu(getOptions(currMenu, instance));
+            while (manager.mode != TextManager.ManagerMode.Standby) { yield return null; }
+            navigateMenu(currMenu, instance, manager.output);
+            skillChosen = true;
+        }
+    }
+
+    private string[] getOptions(CombatMenu menu, CombatInstance instance)
+    {
+        List<string> result = new List<string>();
+        if (menu == CombatMenu.Start)
+        {
+            result.Add("Attack");
+            result.Add("Skill");
+            result.Add("Move");
+        }
+        else if (menu == CombatMenu.Skills)
+        {
+            foreach (Skill.SkillName skill in skills)
+            {
+                result.Add(skill.ToString());
+            }
+        }
+        else if (menu == CombatMenu.Target)
+        {
+            int postFix = 0;
+            bool incr = false;
+
+            if (instance.enemies.Count > 1)
+            {
+                postFix = 1;
+                incr = true;
+            }
+
+            foreach (Enemy enemy in instance.enemies)
+            {
+                if (incr)
+                    postFix++;
+
+                result.Add(enemy.combatName + (incr ? " " + postFix : ""));
+            }
+        }
+
+        return result.ToArray();
+    }
+
+    private void navigateMenu(CombatMenu menu, CombatInstance instance, int option)
+    {
+
+    }
+
 }
